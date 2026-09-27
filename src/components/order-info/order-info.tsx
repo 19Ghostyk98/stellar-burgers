@@ -1,26 +1,24 @@
-import { Preloader, OrderInfoUI } from '@ui';
-import { useMemo } from 'react';
+import { getOrderByNumberApi } from '@api';
+import { OrderInfoUI, Preloader } from '@ui';
+import { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import type { TIngredient } from '@utils-types';
+import { useSelector } from '@services/store';
+
+import type { TIngredient, TOrder } from '@utils-types';
 
 export const OrderInfo = (): React.JSX.Element => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0,
-  };
+  const { number } = useParams();
+  const [orderData, setOrderData] = useState<TOrder | null>(null);
+  const ingredients = useSelector((state) => state.ingredients.items);
 
-  const ingredients: TIngredient[] = [];
+  useEffect(() => {
+    if (!number) return;
+    void getOrderByNumberApi(Number(number)).then((res) => {
+      if (res.success) setOrderData(res.orders[0]);
+    });
+  }, [number]);
 
-  /**
-   * использование useMemo не обязательно
-   */
-  /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
@@ -32,16 +30,10 @@ export const OrderInfo = (): React.JSX.Element => {
       (acc: TIngredientsWithCount, item) => {
         if (!acc[item]) {
           const ingredient = ingredients.find((ing) => ing._id === item);
-          if (ingredient) {
-            acc[item] = {
-              ...ingredient,
-              count: 1,
-            };
-          }
+          if (ingredient) acc[item] = { ...ingredient, count: 1 };
         } else {
           acc[item].count++;
         }
-
         return acc;
       },
       {}
@@ -52,12 +44,7 @@ export const OrderInfo = (): React.JSX.Element => {
       0
     );
 
-    return {
-      ...orderData,
-      ingredientsInfo,
-      date,
-      total,
-    };
+    return { ...orderData, ingredientsInfo, date, total };
   }, [orderData, ingredients]);
 
   if (!orderInfo) {

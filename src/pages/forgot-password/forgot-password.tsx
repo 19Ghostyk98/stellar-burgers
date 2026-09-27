@@ -11,14 +11,15 @@ export const ForgotPassword = (): React.JSX.Element => {
 
   const handleSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
-
     setError(null);
     void forgotPasswordApi({ email })
       .then(() => {
         localStorage.setItem('resetPassword', 'true');
         void navigate('/reset-password', { replace: true });
       })
-      .catch((err: Error) => setError(err));
+      .catch((err: Error) => {
+        setError(err);
+      });
   };
 
   return (
