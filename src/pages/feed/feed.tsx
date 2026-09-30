@@ -1,3 +1,4 @@
+import { selectFeedOrders } from '@selectors';
 import { FeedUI } from '@ui-pages';
 import { useEffect } from 'react';
 
@@ -8,7 +9,7 @@ import type { TOrder } from '@utils-types';
 
 export const Feed = (): React.JSX.Element => {
   const dispatch = useDispatch();
-  const orders = useSelector((state) => state.feed.orders);
+  const orders = useSelector(selectFeedOrders);
 
   useEffect(() => {
     void dispatch(fetchFeed());

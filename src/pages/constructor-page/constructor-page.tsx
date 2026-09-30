@@ -1,4 +1,9 @@
 import { BurgerConstructor, BurgerIngredients } from '@components';
+import {
+  selectIngredients,
+  selectIngredientsError,
+  selectIngredientsLoading,
+} from '@selectors';
 import { Preloader } from '@ui';
 
 import { useSelector } from '@services/store';
@@ -6,7 +11,9 @@ import { useSelector } from '@services/store';
 import styles from './constructor-page.module.css';
 
 export const ConstructorPage = (): React.JSX.Element => {
-  const { isLoading, error, items } = useSelector((state) => state.ingredients);
+  const isLoading = useSelector(selectIngredientsLoading);
+  const error = useSelector(selectIngredientsError);
+  const items = useSelector(selectIngredients);
 
   if (isLoading) return <Preloader />;
 

@@ -1,3 +1,4 @@
+import { selectFeed, selectFeedOrders } from '@selectors';
 import { FeedInfoUI } from '@ui';
 
 import { useSelector } from '@services/store';
@@ -11,8 +12,8 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
     .slice(0, 20);
 
 export const FeedInfo = (): React.JSX.Element => {
-  const feed = useSelector((state) => state.feed);
-  const orders = useSelector((state) => state.feed.orders);
+  const feed = useSelector(selectFeed);
+  const orders = useSelector(selectFeedOrders);
 
   const readyOrders = getOrders(orders, 'done');
   const pendingOrders = getOrders(orders, 'pending');

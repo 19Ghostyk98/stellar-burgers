@@ -1,23 +1,28 @@
-import { getOrderByNumberApi } from '@api';
+import { selectIngredients } from '@selectors';
 import { OrderInfoUI, Preloader } from '@ui';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useSelector } from '@services/store';
+import { clearOrderInfo, fetchOrderByNumber } from '@services/slices/orderInfoSlice';
+import { useDispatch, useSelector } from '@services/store';
 
-import type { TIngredient, TOrder } from '@utils-types';
+import type { TIngredient } from '@utils-types';
 
 export const OrderInfo = (): React.JSX.Element => {
   const { number } = useParams();
-  const [orderData, setOrderData] = useState<TOrder | null>(null);
-  const ingredients = useSelector((state) => state.ingredients.items);
+  const dispatch = useDispatch();
+
+  const orderData = useSelector((state) => state.orderInfo.order);
+  const ingredients = useSelector(selectIngredients);
 
   useEffect(() => {
-    if (!number) return;
-    void getOrderByNumberApi(Number(number)).then((res) => {
-      if (res.success) setOrderData(res.orders[0]);
-    });
-  }, [number]);
+    if (number) {
+      void dispatch(fetchOrderByNumber(Number(number)));
+    }
+    return (): void => {
+      dispatch(clearOrderInfo());
+    };
+  }, [dispatch, number]);
 
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;

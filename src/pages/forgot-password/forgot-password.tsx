@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 export const ForgotPassword = (): React.JSX.Element => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState<Error | null>(null);
-
   const navigate = useNavigate();
 
   const handleSubmit = (e: SyntheticEvent): void => {

@@ -1,6 +1,5 @@
 import { RegisterUI } from '@ui-pages';
 import { type SyntheticEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { registerUser } from '@services/slices/userSlice';
 import { useDispatch } from '@services/store';
@@ -11,16 +10,12 @@ export const Register = (): React.JSX.Element => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
     setError(undefined);
     void dispatch(registerUser({ name: userName, email, password }))
       .unwrap()
-      .then(() => {
-        void navigate('/', { replace: true });
-      })
       .catch((err: Error) => {
         setError(err.message);
       });

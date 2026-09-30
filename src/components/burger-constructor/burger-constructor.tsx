@@ -1,3 +1,9 @@
+import {
+  selectConstructorItems,
+  selectOrderModalData,
+  selectOrderRequest,
+  selectUser,
+} from '@selectors';
 import { BurgerConstructorUI } from '@ui';
 import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -13,9 +19,11 @@ export const BurgerConstructor = (): React.JSX.Element | null => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const constructorItems = useSelector((state) => state.constructorBurger);
-  const { orderRequest, orderModalData } = useSelector((state) => state.order);
-  const isAuth = useSelector((state) => Boolean(state.user.user));
+  const constructorItems = useSelector(selectConstructorItems);
+  const orderRequest = useSelector(selectOrderRequest);
+  const orderModalData = useSelector(selectOrderModalData);
+  const user = useSelector(selectUser);
+  const isAuth = Boolean(user);
 
   const onOrderClick = (): void => {
     if (!isAuth) {
@@ -30,9 +38,12 @@ export const BurgerConstructor = (): React.JSX.Element | null => {
       constructorItems.bun._id,
     ];
 
-    void dispatch(createOrder(ids)).then(() => {
-      void dispatch(clearConstructor());
-    });
+    void dispatch(createOrder(ids))
+      .unwrap()
+      .then(() => {
+        dispatch(clearConstructor());
+      })
+      .catch(() => undefined);
   };
 
   const closeOrderModal = (): void => {

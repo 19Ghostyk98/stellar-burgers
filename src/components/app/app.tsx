@@ -11,7 +11,7 @@ import {
   ResetPassword,
 } from '@pages';
 import { useEffect } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { ProtectedRoute } from '@components/protected-route';
 import { fetchIngredients } from '@services/slices/ingredientsSlice';
@@ -27,6 +27,7 @@ type TLocationState = {
 const App = (): React.JSX.Element => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state as TLocationState | null;
   const background = state?.background;
 
@@ -34,6 +35,10 @@ const App = (): React.JSX.Element => {
     void dispatch(fetchIngredients());
     void dispatch(fetchUser());
   }, [dispatch]);
+
+  const closeModal = (): void => {
+    void navigate(-1);
+  };
 
   return (
     <div className={styles.app}>
@@ -125,7 +130,7 @@ const App = (): React.JSX.Element => {
           <Route
             path="/ingredients/:id"
             element={
-              <Modal title="Детали ингредиента" onClose={() => window.history.back()}>
+              <Modal title="Детали ингредиента" onClose={closeModal}>
                 <IngredientDetails />
               </Modal>
             }
@@ -133,7 +138,7 @@ const App = (): React.JSX.Element => {
           <Route
             path="/feed/:number"
             element={
-              <Modal title="Информация о заказе" onClose={() => window.history.back()}>
+              <Modal title="Информация о заказе" onClose={closeModal}>
                 <OrderInfo />
               </Modal>
             }
@@ -142,7 +147,7 @@ const App = (): React.JSX.Element => {
             path="/profile/orders/:number"
             element={
               <ProtectedRoute>
-                <Modal title="Информация о заказе" onClose={() => window.history.back()}>
+                <Modal title="Информация о заказе" onClose={closeModal}>
                   <OrderInfo />
                 </Modal>
               </ProtectedRoute>

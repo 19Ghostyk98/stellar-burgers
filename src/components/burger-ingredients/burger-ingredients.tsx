@@ -1,15 +1,14 @@
+import { selectIngredients } from '@selectors';
 import { BurgerIngredientsUI } from '@ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { fetchIngredients } from '@services/slices/ingredientsSlice';
-import { useDispatch, useSelector } from '@services/store';
+import { useSelector } from '@services/store';
 
 import type { TIngredient, TTabMode } from '@utils-types';
 
 export const BurgerIngredients = (): React.JSX.Element => {
-  const dispatch = useDispatch();
-  const ingredients = useSelector((state) => state.ingredients.items);
+  const ingredients = useSelector(selectIngredients);
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
@@ -19,10 +18,6 @@ export const BurgerIngredients = (): React.JSX.Element => {
   const [bunsRef, inViewBuns] = useInView({ threshold: 0 });
   const [mainsRef, inViewFilling] = useInView({ threshold: 0 });
   const [saucesRef, inViewSauces] = useInView({ threshold: 0 });
-
-  useEffect(() => {
-    if (!ingredients.length) void dispatch(fetchIngredients());
-  }, [dispatch, ingredients.length]);
 
   useEffect(() => {
     if (inViewBuns) setCurrentTab('bun');

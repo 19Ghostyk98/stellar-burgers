@@ -1,3 +1,4 @@
+import { selectProfileOrders } from '@selectors';
 import { ProfileOrdersUI } from '@ui-pages';
 import { useEffect } from 'react';
 
@@ -12,7 +13,7 @@ import type { TOrder } from '@utils-types';
 
 export const ProfileOrders = (): React.JSX.Element => {
   const dispatch = useDispatch();
-  const orders = useSelector((state) => state.profileOrders.orders);
+  const orders = useSelector(selectProfileOrders);
 
   useEffect(() => {
     void dispatch(fetchProfileOrders());

@@ -1,3 +1,4 @@
+import { selectUser } from '@selectors';
 import { ProfileUI } from '@ui-pages';
 import { type SyntheticEvent, useEffect, useState } from 'react';
 
@@ -5,7 +6,7 @@ import { updateUser } from '@services/slices/userSlice';
 import { useDispatch, useSelector } from '@services/store';
 
 export const Profile = (): React.JSX.Element => {
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector(selectUser);
   const dispatch = useDispatch();
   const [error, setError] = useState<string | undefined>(undefined);
 
