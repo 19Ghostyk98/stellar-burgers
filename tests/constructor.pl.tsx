@@ -17,23 +17,16 @@ test.describe('Страница конструктора бургера', () => 
       window.localStorage.setItem('refreshToken', token);
     }, MOCK_REFRESH_TOKEN);
 
-    await page.route('**/api/auth/user', (route) => {
-      void route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          user: { email: 'test@test.com', name: 'TestUser' },
-        }),
-      });
-    });
-
     await page.routeFromHAR('tests/hars/ingredients.har', {
       url: '**/api/ingredients',
       update: false,
     });
     await page.routeFromHAR('tests/hars/order.har', {
       url: '**/api/orders',
+      update: false,
+    });
+    await page.routeFromHAR('tests/hars/user.har', {
+      url: '**/api/auth/user',
       update: false,
     });
 
@@ -86,6 +79,7 @@ test.describe('Страница конструктора бургера', () => 
 
     const mainCard = page.locator('li', { hasText: 'Моковая котлета' });
     await mainCard.getByRole('button', { name: 'Добавить' }).click();
+
     await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
     const modal = page.getByTestId('modal');

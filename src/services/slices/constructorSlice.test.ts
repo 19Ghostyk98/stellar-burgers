@@ -3,6 +3,7 @@ import constructorReducer, {
   removeIngredient,
   moveIngredient,
   clearConstructor,
+  initialState,
 } from './constructorSlice';
 
 import type { TIngredient } from '@utils-types';
@@ -51,10 +52,7 @@ const mockMain2: TIngredient = {
 
 describe('constructorSlice', () => {
   it('должен вернуть начальное состояние при вызове с undefined и неизвестным экшеном', () => {
-    expect(constructorReducer(undefined, { type: 'UNKNOWN' })).toEqual({
-      bun: null,
-      ingredients: [],
-    });
+    expect(constructorReducer(undefined, { type: 'UNKNOWN' })).toEqual(initialState);
   });
 
   it('должен добавить булку и не добавлять её в список начинок', () => {
@@ -103,6 +101,6 @@ describe('constructorSlice', () => {
     let state = constructorReducer(undefined, addIngredient(mockBun));
     state = constructorReducer(state, addIngredient(mockMain));
     state = constructorReducer(state, clearConstructor());
-    expect(state).toEqual({ bun: null, ingredients: [] });
+    expect(state).toEqual(initialState);
   });
 });
