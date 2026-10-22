@@ -1,15 +1,39 @@
-import { BurgerIngredients, BurgerConstructor } from '@components';
+import { BurgerConstructor, BurgerIngredients } from '@components';
+import {
+  selectIngredients,
+  selectIngredientsError,
+  selectIngredientsLoading,
+} from '@selectors';
+import { Preloader } from '@ui';
+
+import { useSelector } from '@services/store';
 
 import styles from './constructor-page.module.css';
 
-export const ConstructorPage = (): React.JSX.Element => (
-  <main className={styles.containerMain}>
-    <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
-      Соберите бургер
-    </h1>
-    <div className={`${styles.main} pl-5 pr-5`}>
-      <BurgerIngredients />
-      <BurgerConstructor />
-    </div>
-  </main>
-);
+export const ConstructorPage = (): React.JSX.Element => {
+  const isLoading = useSelector(selectIngredientsLoading);
+  const error = useSelector(selectIngredientsError);
+  const items = useSelector(selectIngredients);
+
+  if (isLoading) return <Preloader />;
+
+  if (error) {
+    return <p className="text text_type_main-medium mt-10">{error}</p>;
+  }
+
+  if (!items.length) {
+    return <p className="text text_type_main-medium mt-10">Нет ингредиентов</p>;
+  }
+
+  return (
+    <main className={styles.containerMain}>
+      <h1 className={`${styles.title} text text_type_main-large mt-10 mb-5 pl-5`}>
+        Соберите бургер
+      </h1>
+      <div className={`${styles.main} pl-5 pr-5`}>
+        <BurgerIngredients />
+        <BurgerConstructor />
+      </div>
+    </main>
+  );
+};
